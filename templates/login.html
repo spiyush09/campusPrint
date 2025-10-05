@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Campus Print{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center min-vh-75 align-items-center py-5">
+        <div class="col-md-6 col-lg-5">
+            <div class="card bg-dark border-warning shadow-lg">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold text-white mb-3">
+                            <i class="fas fa-key me-2 text-warning"></i>Login to Your Account
+                        </h2>
+                    </div>
+
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="email" class="form-label text-muted">Email</label>
+                            <input type="email" class="form-control bg-dark border-secondary text-white" 
+                                   id="email" name="email" placeholder="Enter your email" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="password" class="form-label text-muted">Password</label>
+                            <input type="password" class="form-control bg-dark border-secondary text-white" 
+                                   id="password" name="password" placeholder="Enter your password" required>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-warning btn-lg text-dark fw-bold py-3">
+                                Login
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="text-muted mb-3">
+                            Don't have an account?
+                        </p>
+                        <a href="{{ url_for('register') }}" class="btn btn-outline-secondary">Create Account</a>
+                    </div>
+
+                    <!-- Demo Credentials -->
+                    <div class="alert alert-dark border-secondary mt-4 demo-credentials" style="background: rgba(0,0,0,0.3);">
+                        <h6 class="text-white fw-bold mb-3">Demo Credentials:</h6>
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="small mb-1 text-muted"><strong class="text-white">Admin:</strong> admin@campus.edu / admin123</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="small mb-1 text-muted"><strong class="text-white">Student:</strong> Register a new account</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Quick fill demo credentials
+function fillDemoCredentials(type) {
+    if (type === 'admin') {
+        document.getElementById('email').value = 'admin@campus.edu';
+        document.getElementById('password').value = 'admin123';
+    }
+}
+
+// Add click handlers to demo credentials
+document.addEventListener('DOMContentLoaded', function() {
+    const adminSection = document.querySelector('.alert .col-6:first-child');
+    if (adminSection) {
+        adminSection.style.cursor = 'pointer';
+        adminSection.addEventListener('click', () => fillDemoCredentials('admin'));
+        adminSection.title = 'Click to fill admin credentials';
+    }
+});
+</script>
+{% endblock %}

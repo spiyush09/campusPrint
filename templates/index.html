@@ -1,0 +1,277 @@
+{% extends "base.html" %}
+
+{% block title %}Campus Print - Easy Printing on Campus{% endblock %}
+
+{% block content %}
+<!-- Hero Section: The first thing people see -->
+<section class="hero-section bg-gradient-dark text-white py-5">
+    <div class="container">
+        <div class="row align-items-center min-vh-50">
+            <div class="col-lg-6">
+                <!-- Main Heading -->
+                <h1 class="display-3 fw-bold mb-4" style="animation: fadeInUp 0.8s ease-out;">
+                    Smart <span class="text-warning">Campus</span><br>
+                    Printing<br>
+                    <span class="text-warning">Made Simple</span>
+                </h1>
+                <!-- Short description -->
+                <p class="lead mb-4 text-muted">
+                    Upload your docs online, pick your print options, and get them printed. No more waiting in lines or carrying USB drives.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <!-- Button to start printing -->
+                    <a href="{{ url_for('upload') }}" class="btn btn-warning btn-lg text-dark px-5 py-3" 
+                       style="background: linear-gradient(135deg, #ffc107 0%, #b7a04b 100%); border: none; font-weight: bold; letter-spacing: 0.5px;">
+                        <i class="fas fa-print me-2"></i>Start Printing Now
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-6 text-center">
+                <!-- Process Steps (Upload -> Configure -> Print) -->
+                <div class="process-flow">
+                    <div class="d-flex justify-content-center align-items-center gap-4 flex-wrap">
+                        <!-- Step 1 -->
+                        <div class="process-step" style="animation: fadeInUp 0.6s ease-out;">
+                            <div class="process-icon bg-warning text-dark rounded-4 p-4 mb-3 shadow-lg" 
+                                 style="transition: transform 0.3s ease, box-shadow 0.3s ease;"
+                                 onmouseover="this.style.transform='scale(1.1) rotate(5deg)'; this.style.boxShadow='0 10px 30px rgba(183,160,75,0.5)'"
+                                 onmouseout="this.style.transform='scale(1) rotate(0deg)'; this.style.boxShadow=''">
+                                <i class="fas fa-cloud-upload-alt" style="font-size: 3rem;"></i>
+                            </div>
+                            <small class="text-muted d-block">Upload</small>
+                        </div>
+                        <div class="text-warning" style="animation: pulse 2s infinite;">
+                            <i class="fas fa-arrow-right" style="font-size: 2rem;"></i>
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="process-step" style="animation: fadeInUp 0.6s ease-out 0.2s; animation-fill-mode: both;">
+                            <div class="process-icon bg-warning text-dark rounded-4 p-4 mb-3 shadow-lg" 
+                                 style="transition: transform 0.3s ease, box-shadow 0.3s ease;"
+                                 onmouseover="this.style.transform='scale(1.1) rotate(-5deg)'; this.style.boxShadow='0 10px 30px rgba(183,160,75,0.5)'"
+                                 onmouseout="this.style.transform='scale(1) rotate(0deg)'; this.style.boxShadow=''">
+                                <i class="fas fa-sliders-h" style="font-size: 3rem;"></i>
+                            </div>
+                            <small class="text-muted d-block">Configure</small>
+                        </div>
+                        <div class="text-warning" style="animation: pulse 2s infinite 0.5s;">
+                            <i class="fas fa-arrow-right" style="font-size: 2rem;"></i>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="process-step" style="animation: fadeInUp 0.6s ease-out 0.4s; animation-fill-mode: both;">
+                            <div class="process-icon bg-warning text-dark rounded-4 p-4 mb-3 shadow-lg" 
+                                 style="transition: transform 0.3s ease, box-shadow 0.3s ease;"
+                                 onmouseover="this.style.transform='scale(1.1) rotate(5deg)'; this.style.boxShadow='0 10px 30px rgba(183,160,75,0.5)'"
+                                 onmouseout="this.style.transform='scale(1) rotate(0deg)'; this.style.boxShadow=''">
+                                <i class="fas fa-print" style="font-size: 3rem;"></i>
+                            </div>
+                            <small class="text-muted d-block">Print</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="h1 fw-bold text-white mb-3">How Campus Print Works</h2>
+                <p class="text-muted">Just 3 easy steps to get your docs printed</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Step 1 -->
+            <div class="col-md-4">
+                <div class="card border-0 bg-transparent text-center">
+                    <div class="card-body p-4">
+                        <div class="mb-4">
+                            <div class="bg-warning text-dark rounded-circle d-inline-flex align-items-center justify-content-center shadow-lg" 
+                                 style="width: 100px; height: 100px; transition: all 0.3s ease;"
+                                 onmouseover="this.style.transform='scale(1.15) rotate(360deg)'"
+                                 onmouseout="this.style.transform='scale(1) rotate(0deg)'">
+                                <i class="fas fa-file-upload" style="font-size: 2.5rem;"></i>
+                            </div>
+                        </div>
+                        <h5 class="card-title text-white mb-3">Upload Document</h5>
+                        <p class="card-text text-muted">
+                            Upload PDF or DOC files. Max size 10MB. Safe and easy.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- Step 2 -->
+            <div class="col-md-4">
+                <div class="card border-0 bg-transparent text-center">
+                    <div class="card-body p-4">
+                        <div class="mb-4">
+                            <div class="bg-warning text-dark rounded-circle d-inline-flex align-items-center justify-content-center shadow-lg" 
+                                 style="width: 100px; height: 100px; transition: all 0.3s ease;"
+                                 onmouseover="this.style.transform='scale(1.15) rotate(360deg)'"
+                                 onmouseout="this.style.transform='scale(1) rotate(0deg)'">
+                                <i class="fas fa-cogs" style="font-size: 2.5rem;"></i>
+                            </div>
+                        </div>
+                        <h5 class="card-title text-white mb-3">Choose Options</h5>
+                        <p class="card-text text-muted">
+                            Pick color/BW, copies, double-sided, binding, etc.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- Step 3 -->
+            <div class="col-md-4">
+                <div class="card border-0 bg-transparent text-center">
+                    <div class="card-body p-4">
+                        <div class="mb-4">
+                            <div class="bg-warning text-dark rounded-circle d-inline-flex align-items-center justify-content-center shadow-lg" 
+                                 style="width: 100px; height: 100px; transition: all 0.3s ease;"
+                                 onmouseover="this.style.transform='scale(1.15) rotate(360deg)'"
+                                 onmouseout="this.style.transform='scale(1) rotate(0deg)'">
+                                <i class="fas fa-hand-holding" style="font-size: 2.5rem;"></i>
+                            </div>
+                        </div>
+                        <h5 class="card-title text-white mb-3">Collect & Pay</h5>
+                        <p class="card-text text-muted">
+                            Go to print center, collect your docs and pay. Super easy.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="h1 fw-bold text-white mb-3">Pricing</h2>
+                <p class="text-muted">No hidden costs, simple pricing</p>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center g-4">
+            <!-- Black & White -->
+            <div class="col-md-5">
+                <div class="card border-0 bg-transparent text-center pricing-card">
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <div class="bg-secondary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="fas fa-file-alt" style="font-size: 1.5rem;"></i>
+                            </div>
+                        </div>
+                        <h5 class="card-title text-white mb-3">Black & White</h5>
+                        <div class="text-warning mb-2" style="font-size: 2.5rem; font-weight: bold;">₹5</div>
+                        <p class="text-muted mb-3">per page</p>
+                        <div class="text-start px-3">
+                            <p class="text-muted mb-1">• Good quality</p>
+                            <p class="text-muted mb-1">• Fast printing</p>
+                            <p class="text-muted mb-1">• Standard paper</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Color -->
+            <div class="col-md-5">
+                <div class="card border-warning bg-transparent text-center pricing-card">
+                    <div class="card-header bg-warning text-dark py-2">
+                        <small class="fw-bold">POPULAR</small>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <div class="bg-warning text-dark rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="fas fa-palette" style="font-size: 1.5rem;"></i>
+                            </div>
+                        </div>
+                        <h5 class="card-title text-white mb-3">Color Printing</h5>
+                        <div class="text-warning mb-2" style="font-size: 2.5rem; font-weight: bold;">₹20</div>
+                        <p class="text-muted mb-3">per page</p>
+                        <div class="text-start px-3">
+                            <p class="text-muted mb-1">• Bright colors</p>
+                            <p class="text-muted mb-1">• Professional quality</p>
+                            <p class="text-muted mb-1">• Fancy paper available</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="h1 fw-bold text-white mb-3">Why Campus Print?</h2>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Each benefit -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 bg-transparent text-center">
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-clock text-warning" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <h6 class="card-title text-white mb-3">Save Time</h6>
+                        <p class="card-text text-muted small">No more lines, submit & collect later.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 bg-transparent text-center">
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-wifi text-warning" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <h6 class="card-title text-white mb-3">Convenient</h6>
+                        <p class="card-text text-muted small">Upload from anywhere on campus, no USB needed.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 bg-transparent text-center">
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-shield-alt text-warning" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <h6 class="card-title text-white mb-3">Secure</h6>
+                        <p class="card-text text-muted small">Your files are safe, privacy respected.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 bg-transparent text-center">
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-star text-warning" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <h6 class="card-title text-white mb-3">Professional</h6>
+                        <p class="card-text text-muted small">Nice prints on A4 papers, good for academics.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-12 text-center">
+                <p class="text-muted small">
+                    Extra fees for binding/laminating. Prices shown don’t include taxes.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

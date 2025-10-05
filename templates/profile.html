@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - Campus Print{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h2 class="fw-bold text-warning mb-3">
+                <i class="fas fa-user-circle me-2"></i>My Profile
+            </h2>
+            <p class="text-muted">Welcome back, {{ current_user.username }}! Here's your printing dashboard.</p>
+        </div>
+    </div>
+
+    <!-- User Info & Stats -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-lg" style="background: rgba(42, 42, 42, 0.95);">
+                <div class="card-header bg-warning text-dark fw-bold border-0">
+                    <i class="fas fa-user me-2"></i>Account Information
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="bg-warning rounded-circle d-inline-flex align-items-center justify-content-center" 
+                             style="width: 80px; height: 80px;">
+                            <i class="fas fa-user text-dark" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h5 class="text-warning mb-2">{{ current_user.username }}</h5>
+                        <p class="text-muted mb-3">{{ current_user.email }}</p>
+                        <span class="badge bg-{{ 'warning' if current_user.role == 'admin' else 'info' }} text-dark px-3 py-2">
+                            <i class="fas fa-{{ 'shield-alt' if current_user.role == 'admin' else 'user-graduate' }} me-1"></i>
+                            {{ current_user.role.title() }}
+                        </span>
+                    </div>
+                    <hr class="border-warning my-4">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <h6 class="text-warning mb-1">Member Since</h6>
+                            <small class="text-muted">{{ current_user.created_at.strftime('%B %Y') }}</small>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="text-warning mb-1">Last Login</h6>
+                            <small class="text-muted">Today</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-8">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="card text-center border-0 shadow-lg" style="background: rgba(42, 42, 42, 0.95);">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-file-alt text-warning" style="font-size: 2.5rem;"></i>
+                            </div>
+                            <h3 class="text-white fw-bold mb-2">{{ stats.total_requests }}</h3>
+                            <p class="text-muted mb-0">Total Requests</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card text-center border-0 shadow-lg" style="background: rgba(42, 42, 42, 0.95);">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-rupee-sign text-warning" style="font-size: 2.5rem;"></i>
+                            </div>
+                            <h3 class="text-warning fw-bold mb-2">₹{{ stats.total_spent }}</h3>
+                            <p class="text-muted mb-0">Total Spent</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card text-center border-0 shadow-lg" style="background: rgba(42, 42, 42, 0.95);">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-clock text-warning" style="font-size: 2.5rem;"></i>
+                            </div>
+                            <h3 class="text-white fw-bold mb-2">{{ stats.pending }}</h3>
+                            <p class="text-muted mb-0">Pending</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card text-center border-0 shadow-lg" style="background: rgba(42, 42, 42, 0.95);">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-check-circle text-success" style="font-size: 2.5rem;"></i>
+                            </div>
+                            <h3 class="text-white fw-bold mb-2">{{ stats.completed }}</h3>
+                            <p class="text-muted mb-0">Completed</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg" style="background: rgba(42, 42, 42, 0.95);">
+                <div class="card-header bg-warning text-dark fw-bold border-0">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <a href="{{ url_for('upload') }}" class="btn btn-warning w-100 py-3">
+                                <i class="fas fa-plus me-2"></i>New Print Request
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-warning w-100 py-3" onclick="filterRequests('pending')">
+                                <i class="fas fa-clock me-2"></i>View Pending
+                                <span class="badge bg-warning text-dark ms-2">{{ stats.pending }}</span>
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-success w-100 py-3" onclick="filterRequests('completed')">
+                                <i class="fas fa-history me-2"></i>View History
+                                <span class="badge bg-success ms-2">{{ stats.completed }}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Print Requests -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-warning text-dark fw-bold d-flex justify-content-between align-items-center py-3">
+                    <span><i class="fas fa-history me-2"></i>My Print Requests ({{ requests|length }})</span>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-dark" onclick="filterRequests('all')">
+                            <i class="fas fa-list me-1"></i>Show All
+                        </button>
+                        <a href="{{ url_for('upload') }}" class="btn btn-sm btn-outline-dark">
+                            <i class="fas fa-plus me-1"></i>New Request
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    {% if requests %}
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0" id="requestsTable">
+                            <thead style="background: #1a1a1a;">
+                                <tr>
+                                    <th class="py-3 px-3">ID</th>
+                                    <th class="py-3 px-3">File Name</th>
+                                    <th class="py-3 px-3">Type</th>
+                                    <th class="py-3 px-3 text-center">Pages</th>
+                                    <th class="py-3 px-3 text-center">Copies</th>
+                                    <th class="py-3 px-3 text-center">Cost</th>
+                                    <th class="py-3 px-3 text-center">Status</th>
+                                    <th class="py-3 px-3">Date & Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for request in requests %}
+                                <tr data-status="{{ request.status }}" class="align-middle">
+                                    <td class="text-warning fw-bold px-3">#{{ request.id }}</td>
+                                    <td class="px-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-file-{{ 'pdf' if request.original_filename.endswith('.pdf') else 'word' }} me-2 text-muted"></i>
+                                            <div class="text-truncate text-white" style="max-width: 200px;" 
+                                                 title="{{ request.original_filename }}">
+                                                {{ request.original_filename }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-3">
+                                        <span class="badge bg-{{ 'secondary' if request.print_type == 'bw' else 'warning' }} px-2 py-1">
+                                            <i class="fas fa-{{ 'moon' if request.print_type == 'bw' else 'palette' }} me-1"></i>
+                                            {{ 'B&W' if request.print_type == 'bw' else 'Color' }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center px-3">
+                                        <span class="text-white fw-bold">{{ request.pages }}</span>
+                                    </td>
+                                    <td class="text-center px-3">
+                                        <span class="text-white fw-bold">{{ request.copies }}</span>
+                                    </td>
+                                    <td class="text-center px-3">
+                                        <span class="text-warning fw-bold">₹{{ request.total_cost }}</span>
+                                    </td>
+                                    <td class="text-center px-3">
+                                        <span class="badge bg-{{ 'warning' if request.status == 'pending' else 'info' if request.status == 'printing' else 'success' if request.status == 'completed' else 'danger' }} px-2 py-1">
+                                            <i class="fas fa-{{ 'clock' if request.status == 'pending' else 'print' if request.status == 'printing' else 'check' if request.status == 'completed' else 'times' }} me-1"></i>
+                                            {{ request.status.title() }}
+                                        </span>
+                                    </td>
+                                    <td class="px-3">
+                                        <div class="text-white">{{ request.created_at.strftime('%Y-%m-%d') }}</div>
+                                        <small class="text-muted">{{ request.created_at.strftime('%H:%M') }}</small>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5" style="background: #1a1a1a;">
+                        <div class="my-4">
+                            <i class="fas fa-file-alt text-warning mb-3" style="font-size: 4rem; opacity: 0.3;"></i>
+                        </div>
+                        <h5 class="text-white mb-2">No print requests yet</h5>
+                        <p class="text-muted mb-4">Get started by uploading your first document!</p>
+                        <a href="{{ url_for('upload') }}" class="btn btn-warning px-4 py-2">
+                            <i class="fas fa-plus me-2"></i>Create First Request
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Filter requests by status
+function filterRequests(status) {
+    const rows = document.querySelectorAll('#requestsTable tbody tr');
+    
+    if (!rows.length) return;
+    
+    rows.forEach(row => {
+        if (status === 'all' || row.dataset.status === status) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+</script>
+{% endblock %}

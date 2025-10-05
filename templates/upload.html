@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+
+{% block title %}Upload & Print - Campus Print{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12 text-center mb-5">
+            <h2 class="fw-bold text-white mb-3">
+                Upload & Print Your Documents
+            </h2>
+            <p class="text-muted">Choose your document, select printing options, and get an instant price estimate</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- File Upload Section -->
+        <div class="col-lg-6">
+            <div class="card border-0 h-100" style="background: rgba(42, 42, 42, 0.8);">
+                <div class="card-header border-0 text-white fw-bold" style="background: rgba(42, 42, 42, 0.9);">
+                    <i class="fas fa-folder me-2"></i>Select Document
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                        <!-- File Upload Area -->
+                        <div class="upload-area border border-secondary border-dashed rounded p-5 text-center mb-3" 
+                             id="uploadArea" style="min-height: 250px; cursor: pointer; background: rgba(0,0,0,0.3);">
+                            <div class="upload-content">
+                                <i class="fas fa-cloud-upload-alt text-warning" style="font-size: 4rem;"></i>
+                                <h5 class="text-white mt-3 mb-2">Click to upload</h5>
+                                <p class="text-muted mb-1">or drag and drop</p>
+                                <p class="small text-muted">PDF, DOC, DOCX files up to 10MB</p>
+                            </div>
+                            <input type="file" class="d-none" id="fileInput" name="file" 
+                                   accept=".pdf,.doc,.docx" required>
+                        </div>
+
+                        <!-- File Info Display - PREMIUM VERSION -->
+                        <div id="fileInfo" class="d-none mb-3">
+                            <div class="card border-warning" style="background: rgba(26, 26, 26, 0.8); border-width: 2px;">
+                                <div class="card-body p-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="bg-warning rounded p-2">
+                                                <i class="fas fa-file-alt text-dark" style="font-size: 1.5rem;"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-white mb-0 fw-bold" id="fileName"></p>
+                                                <small class="text-muted">Ready to upload</small>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-outline-warning" 
+                                                onclick="clearFile()">
+                                            Change
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Print Options Section -->
+        <div class="col-lg-6">
+            <div class="card border-0 h-100" style="background: rgba(42, 42, 42, 0.8);">
+                <div class="card-header border-0 text-white fw-bold" style="background: rgba(42, 42, 42, 0.9);">
+                    <i class="fas fa-cog me-2"></i>Print Options
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="print_type" class="form-label text-warning">Print Type</label>
+                        <select class="form-select bg-dark border-warning text-white" 
+                                id="print_type" name="print_type" form="uploadForm">
+                            <option value="bw">Black & White (₹5 per page)</option>
+                            <option value="color">Color (₹20 per page)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="copies" class="form-label text-warning">Number of Copies</label>
+                        <input type="number" class="form-control bg-dark border-warning text-white" 
+                               id="copies" name="copies" value="1" min="1" max="50" form="uploadForm">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="pages" class="form-label text-warning">Number of Pages</label>
+                        <input type="number" class="form-control bg-dark border-warning text-white" 
+                               id="pages" name="pages" value="1" min="1" form="uploadForm">
+                        <div class="form-text text-muted">Enter the number of pages in your document</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="double_sided" 
+                                   name="double_sided" form="uploadForm">
+                            <label class="form-check-label text-warning" for="double_sided">
+                                Double-sided Printing
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="binding" class="form-label text-warning">Binding (Optional)</label>
+                        <select class="form-select bg-dark border-warning text-white" 
+                                id="binding" name="binding" form="uploadForm">
+                            <option value="">No Binding</option>
+                            <option value="staple">Staple</option>
+                            <option value="spiral">Spiral Binding</option>
+                            <option value="comb">Comb Binding</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label text-warning">Additional Notes</label>
+                        <textarea class="form-control bg-dark border-warning text-white" 
+                                  id="notes" name="notes" rows="3" form="uploadForm"
+                                  placeholder="Any special instructions..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Price Estimate -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-warning" style="background: rgba(42, 42, 42, 0.8); border-width: 2px;">
+                <div class="card-header bg-warning text-dark fw-bold d-flex align-items-center">
+                    <span class="badge bg-dark text-warning me-2 px-3 py-2">INSTANT QUOTE</span>
+                    <i class="fas fa-info-circle me-2"></i>Price Estimate
+                </div>
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <span class="text-muted">Pages (estimated):</span>
+                                <span class="text-white float-end fw-bold" id="pricePages">1</span>
+                            </div>
+                            <div class="mb-3">
+                                <span class="text-muted">Print Type:</span>
+                                <span class="text-white float-end fw-bold" id="priceType">Black & White (₹5/page)</span>
+                            </div>
+                            <div class="mb-3">
+                                <span class="text-muted">Copies:</span>
+                                <span class="text-white float-end fw-bold" id="priceCopies">1</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <span class="text-muted">Double-sided:</span>
+                                <span class="text-white float-end fw-bold" id="priceDoubleSided">No</span>
+                            </div>
+                            <div class="mb-3">
+                                <span class="text-muted">Binding:</span>
+                                <span class="text-white float-end fw-bold" id="priceBinding">None</span>
+                            </div>
+                            <hr class="border-warning my-3">
+                            <div class="mb-4">
+                                <span class="text-white h5">Total Cost:</span>
+                                <span class="text-warning float-end fw-bold h3" id="totalCost">₹5</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if current_user.is_authenticated %}
+                    <button type="submit" form="uploadForm" class="btn btn-warning btn-lg text-dark fw-bold w-100 py-3">
+                        <i class="fas fa-print me-2"></i>Submit Print Request
+                    </button>
+                    <p class="text-center text-muted small mt-2 mb-0">
+                        You'll pay when collecting your documents from the campus print center
+                    </p>
+                    {% else %}
+                    <div class="alert alert-info border-info mb-0">
+                        <div class="text-center">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Please <a href="{{ url_for('login') }}" class="text-warning">login</a> to submit print requests</strong>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Requests -->
+    {% if current_user.is_authenticated and requests %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-0">
+                <div class="card-header bg-warning text-dark fw-bold">
+                    <i class="fas fa-history me-2"></i>Your Print Requests
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-striped">
+                            <thead>
+                                <tr>
+                                    <th>File</th>
+                                    <th>Type</th>
+                                    <th>Copies</th>
+                                    <th>Cost</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for request in requests %}
+                                <tr>
+                                    <td>{{ request.original_filename }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'secondary' if request.print_type == 'bw' else 'warning' }}">
+                                            {{ 'B&W' if request.print_type == 'bw' else 'Color' }}
+                                        </span>
+                                    </td>
+                                    <td>{{ request.copies }}</td>
+                                    <td class="text-warning fw-bold">₹{{ request.total_cost }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'warning' if request.status == 'pending' else 'info' if request.status == 'printing' else 'success' }}">
+                                            {{ request.status.title() }}
+                                        </span>
+                                    </td>
+                                    <td>{{ request.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// File upload handling
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('fileInput');
+const fileInfo = document.getElementById('fileInfo');
+const fileName = document.getElementById('fileName');
+
+// Click to upload
+uploadArea.addEventListener('click', () => fileInput.click());
+
+// Drag and drop
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('border-2');
+});
+
+uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('border-2');
+});
+
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('border-2');
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        fileInput.files = files;
+        showFileInfo(files[0]);
+    }
+});
+
+// File input change
+fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+        showFileInfo(e.target.files[0]);
+    }
+});
+
+function showFileInfo(file) {
+    fileName.textContent = file.name;
+    uploadArea.classList.add('d-none');
+    fileInfo.classList.remove('d-none');
+}
+
+function clearFile() {
+    fileInput.value = '';
+    uploadArea.classList.remove('d-none');
+    fileInfo.classList.add('d-none');
+}
+
+// Price calculation
+function updatePrice() {
+    const printType = document.getElementById('print_type').value;
+    const copies = parseInt(document.getElementById('copies').value) || 1;
+    const pages = parseInt(document.getElementById('pages').value) || 1;
+    const doubleSided = document.getElementById('double_sided').checked;
+    const binding = document.getElementById('binding').value;
+    
+    // Update display
+    const priceTypeText = printType === 'bw' ? 'Black & White (₹5/page)' : 'Color (₹20/page)';
+    document.getElementById('priceType').textContent = priceTypeText;
+    document.getElementById('pricePages').textContent = pages;
+    document.getElementById('priceCopies').textContent = copies;
+    document.getElementById('priceDoubleSided').textContent = doubleSided ? 'Yes' : 'No';
+    document.getElementById('priceBinding').textContent = binding || 'None';
+    
+    // Calculate cost
+    const pageRate = printType === 'bw' ? 5 : 20;
+    let totalPages = pages * copies;
+    if (doubleSided) {
+        totalPages = Math.ceil(totalPages / 2);
+    }
+    const totalCost = totalPages * pageRate;
+    
+    document.getElementById('totalCost').textContent = `₹${totalCost}`;
+}
+
+// Update price on form changes
+document.getElementById('print_type').addEventListener('change', updatePrice);
+document.getElementById('copies').addEventListener('input', updatePrice);
+document.getElementById('pages').addEventListener('input', updatePrice);
+document.getElementById('double_sided').addEventListener('change', updatePrice);
+document.getElementById('binding').addEventListener('change', updatePrice);
+
+// Initial price calculation
+updatePrice();
+</script>
+{% endblock %}

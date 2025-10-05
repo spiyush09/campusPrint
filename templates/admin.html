@@ -1,0 +1,444 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Campus Print{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0" style="background: rgba(42, 42, 42, 0.8);">
+                <div class="card-body p-4">
+                    <h2 class="fw-bold text-white mb-2">
+                        <i class="fas fa-shield-alt me-2 text-warning"></i>Admin Dashboard
+                    </h2>
+                    <p class="text-muted mb-0">Welcome, admin! Manage all print requests from this dashboard.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Overview -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0" style="background: rgba(42, 42, 42, 0.8);">
+                <div class="card-header border-0 text-white fw-bold py-3" style="background: rgba(42, 42, 42, 0.9);">
+                    <i class="fas fa-chart-bar me-2"></i>System Overview
+                </div>
+                <div class="card-body py-3">
+                    <div class="row g-3">
+                        <div class="col-md-6 col-lg-3">
+                            <div class="text-center p-3 rounded" style="background: rgba(0,0,0,0.3);">
+                                <h3 class="text-warning fw-bold mb-1">{{ stats.total }}</h3>
+                                <p class="text-muted mb-0 small">TOTAL REQUESTS</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="text-center p-3 rounded" style="background: rgba(0,0,0,0.3);">
+                                <h3 class="text-warning fw-bold mb-1">{{ stats.pending }}</h3>
+                                <p class="text-muted mb-0 small">PENDING</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="text-center p-3 rounded" style="background: rgba(0,0,0,0.3);">
+                                <h3 class="text-warning fw-bold mb-1">{{ stats.printing }}</h3>
+                                <p class="text-muted mb-0 small">PRINTING</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="text-center p-3 rounded" style="background: rgba(0,0,0,0.3);">
+                                <h3 class="text-warning fw-bold mb-1">{{ stats.completed }}</h3>
+                                <p class="text-muted mb-0 small">COMPLETED</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0" style="background: rgba(42, 42, 42, 0.8);">
+                <div class="card-header border-0 text-white fw-bold py-3" style="background: rgba(42, 42, 42, 0.9);">
+                    <i class="fas fa-bolt me-2 text-warning"></i>Quick Actions
+                </div>
+                <div class="card-body py-3">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="text-center p-4 rounded" style="background: rgba(139, 117, 45, 0.15); border: 1px solid rgba(139, 117, 45, 0.3);">
+                                <i class="fas fa-hourglass-half text-warning mb-2" style="font-size: 2.5rem;"></i>
+                                <h4 class="text-white fw-bold mb-1">{{ stats.pending }}</h4>
+                                <p class="text-muted mb-0 small">Requests Pending</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-4 rounded" style="background: rgba(74, 158, 255, 0.15); border: 1px solid rgba(74, 158, 255, 0.3);">
+                                <i class="fas fa-print text-info mb-2" style="font-size: 2.5rem;"></i>
+                                <h4 class="text-white fw-bold mb-1">{{ stats.printing }}</h4>
+                                <p class="text-muted mb-0 small">Currently Printing</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-4 rounded" style="background: rgba(76, 175, 80, 0.15); border: 1px solid rgba(76, 175, 80, 0.3);">
+                                <i class="fas fa-check-circle text-success mb-2" style="font-size: 2.5rem;"></i>
+                                <h4 class="text-white fw-bold mb-1">{{ stats.completed }}</h4>
+                                <p class="text-muted mb-0 small">Completed Today</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Print Requests -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-warning text-dark fw-bold d-flex justify-content-between align-items-center py-3">
+                    <span class="h5 mb-0">
+                        <i class="fas fa-list me-2"></i>All Print Requests
+                        <small class="text-dark ms-2">({{ requests|length }} total)</small>
+                    </span>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-dark" onclick="location.reload()">
+                            <i class="fas fa-list me-1"></i>Show All
+                        </button>
+                        <button class="btn btn-sm btn-outline-dark" onclick="location.reload()">
+                            <i class="fas fa-sync me-1"></i>Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    {% if requests %}
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0" id="requestsTable">
+                            <thead style="background: #1a1a1a; position: sticky; top: 0; z-index: 10;">
+                                <tr>
+                                    <th class="py-3 px-3 text-warning">ID</th>
+                                    <th class="py-3 px-3">USER</th>
+                                    <th class="py-3 px-3">FILE</th>
+                                    <th class="py-3 px-3">TYPE</th>
+                                    <th class="py-3 px-3 text-center">PAGES</th>
+                                    <th class="py-3 px-3 text-center">COPIES</th>
+                                    <th class="py-3 px-3 text-center">COST</th>
+                                    <th class="py-3 px-3 text-center">STATUS</th>
+                                    <th class="py-3 px-3">DATE</th>
+                                    <th class="py-3 px-3 text-center">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for req in requests %}
+                                <tr class="align-middle" data-status="{{ req.status }}">
+                                    <td class="text-warning fw-bold px-3">#{{ req.id }}</td>
+                                    <td class="px-3">
+                                        <i class="fas fa-user me-1 text-muted"></i>
+                                        {{ req.user.username }}
+                                    </td>
+                                    <td class="px-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-file me-2 text-muted"></i>
+                                            <span class="text-truncate" style="max-width: 200px;" title="{{ req.original_filename }}">
+                                                {{ req.original_filename }}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="px-3">
+                                        {% if req.print_type == 'bw' %}
+                                        <span class="badge" style="background-color: #6c757d; padding: 0.5rem 0.75rem;">
+                                            <i class="fas fa-moon me-1"></i>B&W
+                                        </span>
+                                        {% else %}
+                                        <span class="badge" style="background-color: #D4AF37; color: #000; padding: 0.5rem 0.75rem;">
+                                            <i class="fas fa-palette me-1"></i>Color
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center px-3">
+                                        <strong>{{ req.pages }}</strong>
+                                        <div class="small text-muted">pages</div>
+                                    </td>
+                                    <td class="text-center px-3">
+                                        <strong>{{ req.copies }}</strong>
+                                        <div class="small text-muted">copies</div>
+                                    </td>
+                                    <td class="text-warning fw-bold text-center px-3">₹{{ "%.1f"|format(req.total_cost) }}</td>
+                                    <td class="text-center px-3">
+                                        {% if req.status == 'pending' %}
+                                        <span class="badge" style="background-color: #4A9EFF; padding: 0.5rem 0.75rem;">
+                                            <i class="fas fa-clock me-1"></i>Printing
+                                        </span>
+                                        {% elif req.status == 'printing' %}
+                                        <span class="badge" style="background-color: #4A9EFF; padding: 0.5rem 0.75rem;">
+                                            <i class="fas fa-print me-1"></i>Printing
+                                        </span>
+                                        {% elif req.status == 'completed' %}
+                                        <span class="badge bg-success" style="padding: 0.5rem 0.75rem;">
+                                            <i class="fas fa-check me-1"></i>Completed
+                                        </span>
+                                        {% else %}
+                                        <span class="badge bg-danger" style="padding: 0.5rem 0.75rem;">
+                                            <i class="fas fa-ban me-1"></i>Cancelled
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-3">
+                                        <div>{{ req.created_at.strftime('%Y-%m-%d') }}</div>
+                                        <div class="small text-muted">{{ req.created_at.strftime('%H:%M') }}</div>
+                                    </td>
+                                    <td class="px-3">
+                                        <div class="d-flex flex-column gap-1" style="min-width: 140px;">
+                                            <!-- View Details Button (Always Shown) -->
+                                            <button class="btn btn-sm w-100" style="background-color: #00BCD4; color: white; padding: 0.4rem;"
+                                                    onclick="viewDetails({{ req.id }})">
+                                                <i class="fas fa-eye me-1"></i>View Details
+                                            </button>
+                                            
+                                            <!-- Status-Based Action Buttons -->
+                                            {% if req.status == 'pending' %}
+                                                <button class="btn btn-success btn-sm w-100" style="padding: 0.4rem;"
+                                                        onclick="updateStatus({{ req.id }}, 'completed')">
+                                                    <i class="fas fa-check me-1"></i>Mark Complete
+                                                </button>
+                                                <button class="btn btn-warning btn-sm w-100" style="padding: 0.4rem; color: #000;"
+                                                        onclick="updateStatus({{ req.id }}, 'pending')">
+                                                    <i class="fas fa-backward me-1"></i>Back to Pending
+                                                </button>
+                                                <button class="btn btn-danger btn-sm w-100" style="padding: 0.4rem;"
+                                                        onclick="updateStatus({{ req.id }}, 'cancelled')">
+                                                    <i class="fas fa-times me-1"></i>Cancel
+                                                </button>
+                                            {% elif req.status == 'printing' %}
+                                                <button class="btn btn-warning btn-sm w-100" style="padding: 0.4rem; background-color: #FFA500; color: #000; border: none;"
+                                                        onclick="updateStatus({{ req.id }}, 'printing')">
+                                                    <i class="fas fa-redo me-1"></i>Re-open Printing
+                                                </button>
+                                                <button class="btn btn-secondary btn-sm w-100" style="padding: 0.4rem;"
+                                                        onclick="updateStatus({{ req.id }}, 'pending')">
+                                                    <i class="fas fa-backward me-1"></i>Back to Pending
+                                                </button>
+                                                <button class="btn btn-danger btn-sm w-100" style="padding: 0.4rem;"
+                                                        onclick="updateStatus({{ req.id }}, 'cancelled')">
+                                                    <i class="fas fa-times me-1"></i>Cancel
+                                                </button>
+                                            {% elif req.status == 'completed' %}
+                                                <button class="btn btn-warning btn-sm w-100" style="padding: 0.4rem; background-color: #FFA500; color: #000; border: none;"
+                                                        onclick="updateStatus({{ req.id }}, 'printing')">
+                                                    <i class="fas fa-redo me-1"></i>Re-open Printing
+                                                </button>
+                                                <button class="btn btn-secondary btn-sm w-100" style="padding: 0.4rem;"
+                                                        onclick="updateStatus({{ req.id }}, 'pending')">
+                                                    <i class="fas fa-backward me-1"></i>Back to Pending
+                                                </button>
+                                                <button class="btn btn-danger btn-sm w-100" style="padding: 0.4rem;"
+                                                        onclick="updateStatus({{ req.id }}, 'cancelled')">
+                                                    <i class="fas fa-times me-1"></i>Cancel
+                                                </button>
+                                            {% elif req.status == 'cancelled' %}
+                                                <button class="btn btn-success btn-sm w-100" style="padding: 0.4rem; background-color: #4CAF50; border: none;"
+                                                        onclick="updateStatus({{ req.id }}, 'pending')">
+                                                    <i class="fas fa-redo me-1"></i>Re-activate
+                                                </button>
+                                                <button class="btn btn-sm w-100" style="padding: 0.4rem; background-color: #00BCD4; color: white;"
+                                                        onclick="updateStatus({{ req.id }}, 'printing')">
+                                                    <i class="fas fa-play me-1"></i>Start Printing
+                                                </button>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-clipboard-list text-muted mb-3" style="font-size: 4rem;"></i>
+                        <h5 class="text-white mb-2">No print requests yet</h5>
+                        <p class="text-muted">Print requests will appear here when students upload documents.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Information -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0" style="background: rgba(42, 42, 42, 0.8);">
+                <div class="card-header border-0 text-white fw-bold py-3" style="background: rgba(42, 42, 42, 0.9);">
+                    <i class="fas fa-info-circle me-2 text-warning"></i>System Information
+                </div>
+                <div class="card-body py-3">
+                    <p class="text-muted mb-0">
+                        <strong class="text-white">Print Queue Management:</strong> Update request status to manage the print workflow. You can change status in any direction to correct mistakes.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Request Details Modal -->
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content bg-dark border-warning">
+            <div class="modal-header border-warning">
+                <h5 class="modal-title text-warning">
+                    <i class="fas fa-info-circle me-2"></i>Request Details
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-warning" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Update request status
+function updateStatus(requestId, newStatus) {
+    if (!confirm(`Are you sure you want to change status to "${newStatus}"?`)) {
+        return;
+    }
+    
+    fetch('/api/update_request_status', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            request_id: requestId,
+            status: newStatus
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error updating status: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to update status. Please try again.');
+    });
+}
+
+// View request details
+function viewDetails(requestId) {
+    const modal = new bootstrap.Modal(document.getElementById('detailsModal'));
+    const modalBody = document.getElementById('modalBody');
+    
+    // Show loading
+    modalBody.innerHTML = `
+        <div class="text-center py-4">
+            <div class="spinner-border text-warning" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    `;
+    
+    modal.show();
+    
+    // Find request data from the table
+    const row = document.querySelector(`tr[data-status]`);
+    const rows = document.querySelectorAll('#requestsTable tbody tr');
+    let requestData = null;
+    
+    rows.forEach(r => {
+        const id = r.querySelector('td:first-child').textContent.replace('#', '');
+        if (id == requestId) {
+            requestData = {
+                id: id,
+                user: r.querySelectorAll('td')[1].textContent.trim(),
+                file: r.querySelectorAll('td')[2].textContent.trim(),
+                type: r.querySelectorAll('td')[3].textContent.trim(),
+                pages: r.querySelectorAll('td')[4].querySelector('strong').textContent,
+                copies: r.querySelectorAll('td')[5].querySelector('strong').textContent,
+                cost: r.querySelectorAll('td')[6].textContent.trim(),
+                status: r.querySelectorAll('td')[7].textContent.trim(),
+                date: r.querySelectorAll('td')[8].textContent.trim()
+            };
+        }
+    });
+    
+    if (requestData) {
+        modalBody.innerHTML = `
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="p-3 rounded" style="background: rgba(0,0,0,0.3);">
+                        <label class="text-warning fw-bold mb-2">Request ID</label>
+                        <p class="text-white mb-0">#${requestData.id}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-3 rounded" style="background: rgba(0,0,0,0.3);">
+                        <label class="text-warning fw-bold mb-2">User</label>
+                        <p class="text-white mb-0">${requestData.user}</p>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="p-3 rounded" style="background: rgba(0,0,0,0.3);">
+                        <label class="text-warning fw-bold mb-2">File Name</label>
+                        <p class="text-white mb-0">${requestData.file}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-3 rounded" style="background: rgba(0,0,0,0.3);">
+                        <label class="text-warning fw-bold mb-2">Print Type</label>
+                        <p class="text-white mb-0">${requestData.type}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-3 rounded" style="background: rgba(0,0,0,0.3);">
+                        <label class="text-warning fw-bold mb-2">Status</label>
+                        <p class="text-white mb-0">${requestData.status}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 rounded" style="background: rgba(0,0,0,0.3);">
+                        <label class="text-warning fw-bold mb-2">Pages</label>
+                        <p class="text-white mb-0">${requestData.pages}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 rounded" style="background: rgba(0,0,0,0.3);">
+                        <label class="text-warning fw-bold mb-2">Copies</label>
+                        <p class="text-white mb-0">${requestData.copies}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 rounded" style="background: rgba(0,0,0,0.3);">
+                        <label class="text-warning fw-bold mb-2">Total Cost</label>
+                        <p class="text-white mb-0">${requestData.cost}</p>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="p-3 rounded" style="background: rgba(0,0,0,0.3);">
+                        <label class="text-warning fw-bold mb-2">Date & Time</label>
+                        <p class="text-white mb-0">${requestData.date}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Auto-refresh every 30 seconds
+setInterval(() => {
+    location.reload();
+}, 30000);
+</script>
+{% endblock %}
