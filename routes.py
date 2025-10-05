@@ -1,7 +1,7 @@
 import os
 import secrets
 from datetime import datetime
-from flask import render_template, request, redirect, url_for, flash, jsonify, session, current_app
+from flask import render_template, request, redirect, url_for, flash, jsonify, session, current_app, send_file
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -210,6 +210,68 @@ def admin_dashboard():
     }
     
     return render_template('admin.html', stats=stats, requests=all_requests)
+
+# ============================================
+# NEW: DOWNLOAD FUNCTIONALITY FOR ADMIN
+# ============================================
+
+@app.route('/download/<int:request_id>')
+@login_required
+def download_file(request_id):
+    """Download file - accessible by admin or the user who uploaded it"""
+    print_request = PrintRequest.query.get_or_404(request_id)
+    
+    # Check permissions: either admin or the owner of the request
+    if current_user.role != 'admin' and current_user.id != print_request.user_id:
+        flash('Access denied. You do not have permission to download this file.', 'error')
+        return redirect(url_for('index'))
+    
+    # Check if file exists
+    if not os.path.exists(print_request.file_path):
+        flash('File not found on server.', 'error')
+        logging.error(f"File not found: {print_request.file_path}")
+        return redirect(url_for('admin_dashboard') if current_user.role == 'admin' else url_for('profile'))
+    
+    try:
+        # Send file with original filename for download
+        return send_file(
+            print_request.file_path,
+            as_attachment=True,
+            download_name=print_request.original_filename
+        )
+    except Exception as e:
+        flash(f'Error downloading file: {str(e)}', 'error')
+        logging.error(f"Download error for request {request_id}: {str(e)}")
+        return redirect(url_for('admin_dashboard') if current_user.role == 'admin' else url_for('profile'))
+
+
+@app.route('/api/download/<int:request_id>')
+@login_required
+def api_download_file(request_id):
+    """API endpoint for downloading files (for AJAX requests)"""
+    print_request = PrintRequest.query.get_or_404(request_id)
+    
+    # Check permissions
+    if current_user.role != 'admin' and current_user.id != print_request.user_id:
+        return jsonify({'error': 'Access denied'}), 403
+    
+    # Check if file exists
+    if not os.path.exists(print_request.file_path):
+        return jsonify({'error': 'File not found'}), 404
+    
+    try:
+        return send_file(
+            print_request.file_path,
+            as_attachment=True,
+            download_name=print_request.original_filename
+        )
+    except Exception as e:
+        logging.error(f"API download error for request {request_id}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+# ============================================
+# END OF NEW DOWNLOAD FUNCTIONALITY
+# ============================================
 
 @app.route('/api/calculate_price', methods=['POST'])
 @login_required
