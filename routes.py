@@ -211,9 +211,7 @@ def admin_dashboard():
     
     return render_template('admin.html', stats=stats, requests=all_requests)
 
-# ============================================
 # NEW: DOWNLOAD FUNCTIONALITY FOR ADMIN
-# ============================================
 
 @app.route('/download/<int:request_id>')
 @login_required
@@ -269,9 +267,8 @@ def api_download_file(request_id):
         logging.error(f"API download error for request {request_id}: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-# ============================================
 # END OF NEW DOWNLOAD FUNCTIONALITY
-# ============================================
+
 
 @app.route('/api/calculate_price', methods=['POST'])
 @login_required
